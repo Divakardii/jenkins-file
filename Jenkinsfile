@@ -3,16 +3,22 @@ pipeline {
 
     stages {
 
-        stage('Clone Code') {
+        stage('Build Docker Images') {
             steps {
-                echo 'Cloning handled by Jenkins SCM configuration'
+                sh 'docker build -t app-backend ./backend'
+                sh 'docker build -t app-frontend ./frontend'
             }
         }
 
-        stage('Build & Deploy') {
+        stage('Deploy Containers') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up --build -d'
+                sh 'docker stop backend || true'
+                sh 'docker stop frontend || true'
+                sh 'docker rm backend || true'
+                sh 'docker rm frontend || true'
+
+                sh 'docker run -d -p 5000:5000 --name backend app-backend'
+                sh 'docker run -d -p 80:80 --name frontend app-frontend'
             }
         }
     }
