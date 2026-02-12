@@ -3,9 +3,14 @@ pipeline {
 
     stages {
 
-        stage('Build Docker Images') {
+        stage('Build Backend Image') {
             steps {
                 sh 'docker build -t app-backend ./backend'
+            }
+        }
+
+        stage('Build Frontend Image') {
+            steps {
                 sh 'docker build -t app-frontend ./frontend'
             }
         }
